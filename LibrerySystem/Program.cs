@@ -1,4 +1,5 @@
 using LibrerySystem.Models;
+using LibrerySystem.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
@@ -26,7 +27,7 @@ builder.Services.AddSwaggerGen(c =>
     c.IncludeXmlComments(xmlPath);
 });
 builder.Services.AddAutoMapper(typeof(Program));
-
+builder.Services.AddScoped<IUserService, UserService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

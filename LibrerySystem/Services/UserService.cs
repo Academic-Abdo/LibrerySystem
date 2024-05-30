@@ -10,7 +10,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Xml.Linq;
 
-namespace CustomerMicroService.Services
+namespace LibrerySystem.Services
 {
     public class UserService : IUserService
     {
@@ -135,47 +135,24 @@ namespace CustomerMicroService.Services
             return await _context.Users.Where(a => a.Email.Equals(email))
                 .FirstOrDefaultAsync() ?? new User();
         }
-        public async Task<User> CreateCustomer(RegisterDto registerDTO)
+        public async Task<User> CreateUser(RegisterDTO registerDTO)
         {
             var customer = _mapper.Map<User>(registerDTO);
             //get the hased password and selt from the password
             var hash = HashPasword(registerDTO.Password, out var salt);
             customer.PasswordHash = hash;
             customer.PasswordSalt = salt;
-            customer.Status = true;
-            _context.Customers.Add(customer);
+            _context.Users.Add(customer);
             await _context.SaveChangesAsync();
             return customer;
         }
-        public async Task UpdateCustomerRelatedInfo(int id, UpdateCustomerDTO updateCustomerDTO)
+        
+        public void SetUser(User user)
         {
-            await UpdateCustomerNumbers(id, updateCustomerDTO.CustomerPhoneNumbers);
-            await UpdateCustomerAddreses(id, updateCustomerDTO.CustomerAddresses);
-        }
-        public async Task UpdateCustomerAddreses(int customerId,List<CreateCustomerAddressDTO> customerAddresses)
-        {
-            //delete old adresses
-            var oldAddresess = await _context.CustomerAddresses.Where(a => a.CustomerId == customerId).ToListAsync();
-            _context.CustomerAddresses.RemoveRange(oldAddresess);
-            //add the new addreses
-            var newAddreses = customerAddresses.Select(a => _mapper.Map<CustomerAddress>(a));
-            _context.CustomerAddresses.AddRange(newAddreses);
-        }
-        public async Task UpdateCustomerNumbers(int customerId,List<CreateCustomerPhoneNumberDTO> customerPhoneNumbers)
-        {
-            //delete old customer numbers
-            var oldNumbers = await _context.CustomerPhoneNumbers.Where(a => a.CustomerId == customerId).ToListAsync();
-            _context.CustomerPhoneNumbers.RemoveRange(oldNumbers);
-            //add the new numbers
-            var newNumbers = customerPhoneNumbers.Select(a => _mapper.Map<CustomerPhoneNumber>(a));
-            _context.CustomerPhoneNumbers.AddRange(newNumbers);
-        }
-        public void SetUser(Customer customer)
-        {
-            _user = customer;
+            _user = user;
         }
         
-        public Customer? GetUser()
+        public User? GetUser()
         {
             return _user;
         }

@@ -2,7 +2,7 @@
 using LibrerySystem.DTOs;
 using LibrerySystem.Models;
 
-namespace CustomerMicroService.Services
+namespace LibrerySystem.Services
 {
     public interface IUserService
     {
@@ -10,7 +10,6 @@ namespace CustomerMicroService.Services
         string CreateToken(string? newUserEmail = null);
         Task<bool> ValidateUser(LoginDTO loginDTO);
         Task<User> GetUserByEmail(string email);
-        Task<User> CreateCustomer(RegisterDto registerDTO);
-        Task UpdateCustomerRelatedInfo(int id, UpdateCustomerDTO updateCustomerDTO);
+        Task<User> CreateUser(RegisterDTO registerDTO);
     }
 }
